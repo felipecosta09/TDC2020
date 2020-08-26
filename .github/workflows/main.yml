@@ -18,7 +18,7 @@ jobs:
         maxVeryHigh: 10
         maxHigh: 10
         maxMedium: 10
-        maxLow: 1
+        maxLow: 10
         templatePath: wordpress.json 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
