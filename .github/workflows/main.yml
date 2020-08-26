@@ -1,0 +1,30 @@
+name: Deployd Wordpress AWS
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  Conformity-Pipeline:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cloud One Conformity Pipeline Scanner
+      uses: raphabot/conformity-template-scanner-pipeline@v1.0.0
+      env:  
+        cc_apikey: ${{ secrets.CC_API }}
+        cc_region: us-west-2
+        maxExtreme: 10
+        maxVeryHigh: 10
+        maxHigh: 10
+        maxMedium: 10
+        maxLow: 1
+        templatePath: wordpress.json 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+       aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+       aws-secret-access-key: ${{ secrets.SECRET }}
+       aws-region: sa-east-1    
+    - name: Deploy CloudFormation
+      run: aws cloudformation create-stack  --stack-name mywp --template-body file://wordpress.json --parameters ParameterKey=KeyName,ParameterValue=sa-east-1 ParameterKey=DBPassword,ParameterValue=trendmicro ParameterKey=DBRootPassword,ParameterValue=trendmicro ParameterKey=DBUser,ParameterValue=admin
